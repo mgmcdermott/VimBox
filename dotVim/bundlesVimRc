@@ -268,7 +268,8 @@ Plug 'jordwalke/VimSplitBalancer'
 " ======================= A lighterweight Powerline ============================
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-let g:airline_powerline_fonts = 1
+let g:airline_theme='oceanicnext'
+let g:airline_powerline_fonts = 0
 let g:airline_skip_empty_sections = 1
 " Git status can be expensive.
 let g:airline#extensions#branch#enabled = 0
@@ -476,6 +477,6 @@ if !exists('g:one_allow_italics')
   " Italics don't typically render well in terminals
   let g:one_allow_italics = has('gui_running')
 endif
-Plug 'jordwalke/vim-one'
+" Plug 'jordwalke/vim-one'
+Plug 'mhartington/oceanic-next'
 " ==============================================================================
-
