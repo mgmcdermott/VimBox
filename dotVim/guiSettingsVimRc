@@ -76,4 +76,5 @@ augroup END
 
 syntax enable
 set background=dark
-colorscheme OceanicNext
+set linespace=2
+colorscheme one

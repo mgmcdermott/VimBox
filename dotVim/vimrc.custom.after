@@ -1,2 +1,27 @@
 " Overwrite this file with whatever you want. This will be executed after
 " loading any of the stock bundles/settings.
+set colorcolumn=100
+set relativenumber
+set number
+" Do not require .jsx extension for files with JSX
+let g:jsx_ext_required = 0
+" Trim trailing whitespace on save
+autocmd BufWritePre * %s/\s\+$//e
+" Use local eslint if it exists, otherwise use the global eslint
+" let g:syntastic_javascript_eslint_exe = '[ -f $(npm bin)/eslint ] && $(npm bin)/eslint || eslint'
+" let g:syntastic_javascript_eslint_exe = './node_modules/.bin/eslin'
+" Show hidden files in NERDTree
+let NERDTreeShowHidden=1
+let NERDTreeIgnore = ['\.pyc$', '\.DS_Store', '\.git', '\.idea']
+
+" Use prettier-eslint-cli
+autocmd FileType javascript.jsx set formatprg=prettier-eslint\ --stdin
+
+" Plug 'tpope/vim-dispatch'
+Plug 'janko-m/vim-test'
+let test#strategy = "iterm"
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
