@@ -17,6 +17,16 @@ let NERDTreeIgnore = ['\.pyc$', '\.DS_Store', '\.git', '\.idea']
 " Use prettier-eslint-cli
 autocmd FileType javascript.jsx set formatprg=prettier-eslint\ --stdin
 
+" Reload changed files automatically
+Plug 'chrisbra/vim-autoread'
+
+" Typescript
+" Plug 'leafgarland/typescript-vim'
+" Plug 'HerringtonDarkholme/yats.vim'
+" Plug 'Quramy/tsuquyomi'
+" let g:tsuquyomi_disable_quickfix = 1
+" let g:syntastic_typescript_checkers = ['tsuquyomi']
+
 " Plug 'tpope/vim-dispatch'
 Plug 'janko-m/vim-test'
 let test#strategy = "iterm"
