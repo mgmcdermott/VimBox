@@ -23,7 +23,7 @@ if has("gui_running") " all this for gui use
     " set guioptions-=e
     set novisualbell     "Visual Bell Looks really ghetto on Windows GVim.
     set guioptions-=m
-    set guifont=PragmataPro:h14,PragmataPro\ Mono:h14,Essential_PragmataPro:h14,iosevka:h14,Lucida_Console:h14.00
+    set guifont=PragmataPro:h18,PragmataPro\ Mono:h18,Essential_PragmataPro:h18,iosevka:h18,Lucida_Console:h18.00
     " Needed to NOT break symlinks on windows! Will write to new file instead of
     " original symlinked file if you do not inclue the following line:
     " Doesn't seem to fix the issue - always go to the source when editing files!
@@ -38,7 +38,7 @@ if has("gui_running") " all this for gui use
   " Make sure to turn off anti-aliasing in general preferences panel.
   if has("gui_macvim") || has("gui_vimr")
     " Set to empty string - no ugly NonText ~ etc.
-    set fillchars=vert:\ ,diff:\ 
+    set fillchars=vert:\ ,diff:\
 
     " Don't remove tabs on MacVim because VimGUITabs plugin makes them get out
     " of the way when we want them to get out of the way (in full screen mode).
@@ -48,8 +48,7 @@ if has("gui_running") " all this for gui use
     set transparency=0
     set fuoptions=maxvert,maxhorz
     " The following is how you set a special linespace *per* font:
-    " set guifont=PragmataPro:h12,Essential\ PragmataPro:h12,iosevka:h12
-    set guifont=OperatorMono-Book:h14
+    set guifont=Operator\ Mono:h16,PragmataPro:h16,Essential\ PragmataPro:h16,iosevka:h16
     " For iosevka to render perfectly in macvim, linespace -1
     set nolazyredraw
     " Change to `1` if your font is patched with webdev icons.
