@@ -1,3 +1,6 @@
+
+
+
 " ================================================
 "         .__           ___.
 "  ___  __|__|  _____   \_ |__    ____  ___  ___
@@ -21,7 +24,10 @@
 "  org.vim.MacVim MMVerticalSplit YES
 "  3. If when changing monitors, your fonts go from nice and thin to ugly and
 "  bold: This should fix it:
-"   defaults -currentHost write -globalDomain AppleFontSmoothing -int 1
+"   Textmate disables font smoothing only for dark backgrounds, but MacVim
+"   only has a global setting. If you use dark backgrounds consider disabling.
+"   https://stackoverflow.com/questions/24598390/macvim-thicker-font-rendering-compared-to-textmate
+"   defaults write org.vim.MacVim AppleFontSmoothing -int 0  
 "  4. Speed up full screen transition:
 "  defaults write org.vim.MacVim MMFullScreenFadeTime 0.05
 "
@@ -51,7 +57,7 @@
 "   :noautocmd qall!
 "
 " Profile Startup Time:
-" ============================================================
+" ==================================================================
 "   mvim --startuptime ~/.vim/timeCost.txt ~/.vim/timeCost.txt
 "
 " Debugging VimSript Errors:
@@ -70,6 +76,36 @@
 " not the line number in the file like any reasonable error message would
 " display that's the line number within the deepest function.
 
+" Seeing Who Is Setting A Setting:
+" =================================================================
+" :verbose set settingName?
+
+" Using In Terminal
+" ================
+" Using VimBox in your terminal is semi-supported. It should work, but it is
+" not tested often. If you see something off, please report but a PR is
+" the best way to move VimBox forward with terminal support.
+"
+" Note: If you use iTerm, and you want airline symbols to show up correctly
+" you must change the font in *two* places in iTerm. The normal font, and the
+" non-ascii font!
+"
+" Remote Editing:
+"
+" - Speed up performance at the network layer:
+"   http://thomer.com/howtos/netrw_ssh.html
+" - Help netrw-passwd
+"
+" - Also good suggestions here: https://stackoverflow.com/questions/28795721/how-to-save-in-vim-a-remote-file-asynchronously
+"   - As always disable airline/lightline vcs integration.
+" - https://github.com/eshion/vim-sync/
+" - https://github.com/grantm/bcvi
+" - https://github.com/seletskiy/vim-refugi
+
+" if v:version < 799
+  " echomsg "VimBox works best with Vim8 or newer. Please upgrade your Vim/MacVim"
+" endif
+
 if has('gui_win32')
   set rtp+=~/.vim
 endif
@@ -80,8 +116,7 @@ if has('vim_starting')
    endif
 endif
 
-call plug#begin('~/.vim/bundle')
-
+silent! call plug#begin('~/.vim/bundle')
 
 if filereadable(expand("~/.vim/vimrc.custom.before"))
   source ~/.vim/vimrc.custom.before
@@ -166,7 +201,11 @@ set spelllang=en
 set spellfile=$HOME/vim_spell/en.utf-8.add
 " UndoDir:
 let s:homeFolder = $HOME
-let s:undoDir = s:homeFolder . '/vimUndo'
+if (exists('g:vimBoxUndoDir'))
+  let s:undoDir = g:vimBoxUndoDir
+else
+  let s:undoDir = s:homeFolder . '/vimUndo'
+endif
 set undofile
 " " Create undo dir if needed - not in your dotVim folder! It should be local to
 " " your computer.
@@ -194,12 +233,6 @@ endtry
 
 " A better diff link for macvim
 " alias mvimdiff="mvim -O  \"+windo set diff scrollbind scrollopt+=hor nowrap\""
-
-" All ObjC/C++ files are ObjCPP.
-" All snipets for ObjC are in ~/.vim/myUltiSnippets/objcpp.snippets
-au BufNewFile,BufRead *.cpp set filetype=objcpp
-au BufNewFile,BufRead *.h set filetype=objcpp
-au BufNewFile,BufRead *.m set filetype=objcpp
 
 
 " iTerm requires the following commented code to be placed in your .bashrc in
@@ -229,8 +262,8 @@ if (empty($TMUX))
     " New airline should work without them.
     " https://github.com/vim/vim/issues/993
     " set Vim-specific sequences for RGB colors
-    " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-    " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     set termguicolors
   endif
 endif
@@ -265,7 +298,8 @@ if !len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
   set listchars = "eol:$"
   source ~/.vim/vimrc.custom.after
 else
-  if has('gui') && has('mac')
+  " Don't show statusline when airline might not be loaded or configured.
+  if exists("g:gui_oni") || has('gui') && has('mac') && has('gui_running')
     set background=dark
     colorscheme vimBoxColorsDuringLoad
     set guioptions-=r
@@ -275,12 +309,20 @@ else
     " The backticks and echo make it work better in terminal env
     autocmd VimEnter *
       \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)')) && 1==confirm("Download and Install Plugins?", "&Yes\n&No", 1)
+      \|   set laststatus=0
       \|   PlugInstall --sync | echomsg "Open a new window to enjoy the plugins!" | let xx=confirm("Open a New Window For Plugins to Take Effect.")
       \| endif
-    " TODO: Make it so the next key you hit closes the window and opens a
-    " new one. That way, we don't actually have to block on PlugInstall
-    " here.
+    " Source the settings just in case they respond with "No, don't update plugins"
+    source ~/.vim/guiSettingsVimRc
+    source ~/.vim/keysVimRc
+    source ~/.vim/customFunctions.vim
+    " Some vim reset plugin screws up listchars
+    set listchars = "eol:$"
+    " VimBox plugin configuration that has to be performed after loading
+    " plugins.
+    source ~/.vim/vimrc.custom.after
   else
+    set laststatus=0
     echomsg "Attempting to install plugins. Be patient. Vim is working in the background. It will start eventually."
     PlugInstall --sync
     source ~/.vim/guiSettingsVimRc
@@ -288,6 +330,8 @@ else
     source ~/.vim/customFunctions.vim
     " Some vim reset plugin screws up listchars
     set listchars = "eol:$"
+    " VimBox plugin configuration that has to be performed after loading
+    " plugins.
     source ~/.vim/vimrc.custom.after
   endif
 endif

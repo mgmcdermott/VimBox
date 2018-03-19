@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
 PWD=$(pwd)
+# Make sure that if we happen to be running in cygwin the symlinks will get setup correctly.
+# Make sure to enable develoepr more before installing
+export CYGWIN="$CYGWIN winsymlinks:nativestrict"
 
 if [[ -f "$PWD/dotVimRc" && ! -L "$PWD/dotVimRc" ]]; then
   # first, backup any existing scripts if they are not symlinks
@@ -67,29 +70,31 @@ if [[ -f "$PWD/dotVimRc" && ! -L "$PWD/dotVimRc" ]]; then
     echo -e "Not linking from $HOME/.gvimrc - it was already moved, or already existed"
   fi
 
-  FONT_SOURCE="$PWD/dotVim/Fonts/Iosevka/iosevka-regular.ttf"
-  FONT_DEST="$HOME/Library/Fonts/iosevka-regular.ttf"
-  if [[ ! -f "$FONT_DEST" ]]; then
-    echo -e "Installing font $FONT_SOURCE into $FONT_DEST"
-    cp "$FONT_SOURCE" "$FONT_DEST"
-  else
-    echo -e "The font $FONT_DEST was already installed"
-  fi
-  FONT_SOURCE="$PWD/dotVim/Fonts/Iosevka/iosevka-bold.ttf"
-  FONT_DEST="$HOME/Library/Fonts/iosevka-bold.ttf"
-  if [[ ! -f "$FONT_DEST" ]]; then
-    echo -e "Installing font $FONT_SOURCE into $FONT_DEST"
-    cp "$FONT_SOURCE" "$FONT_DEST"
-  else
-    echo -e "The font $FONT_DEST was already installed"
-  fi
-  FONT_SOURCE="$PWD/dotVim/Fonts/Iosevka/iosevka-italic.ttf"
-  FONT_DEST="$HOME/Library/Fonts/iosevka-italic.ttf"
-  if [[ ! -f "$FONT_DEST" ]]; then
-    echo -e "Installing font $FONT_SOURCE into $FONT_DEST"
-    cp "$FONT_SOURCE" "$FONT_DEST"
-  else
-    echo -e "The font $FONT_DEST was already installed"
+  if [ -d "$HOME/Library/Fonts" ]; then
+    FONT_SOURCE="$PWD/dotVim/Fonts/Iosevka/iosevka-regular.ttf"
+    FONT_DEST="$HOME/Library/Fonts/iosevka-regular.ttf"
+    if [[ ! -f "$FONT_DEST" ]]; then
+      echo -e "Installing font $FONT_SOURCE into $FONT_DEST"
+      cp "$FONT_SOURCE" "$FONT_DEST"
+    else
+      echo -e "The font $FONT_DEST was already installed"
+    fi
+    FONT_SOURCE="$PWD/dotVim/Fonts/Iosevka/iosevka-bold.ttf"
+    FONT_DEST="$HOME/Library/Fonts/iosevka-bold.ttf"
+    if [[ ! -f "$FONT_DEST" ]]; then
+      echo -e "Installing font $FONT_SOURCE into $FONT_DEST"
+      cp "$FONT_SOURCE" "$FONT_DEST"
+    else
+      echo -e "The font $FONT_DEST was already installed"
+    fi
+    FONT_SOURCE="$PWD/dotVim/Fonts/Iosevka/iosevka-italic.ttf"
+    FONT_DEST="$HOME/Library/Fonts/iosevka-italic.ttf"
+    if [[ ! -f "$FONT_DEST" ]]; then
+      echo -e "Installing font $FONT_SOURCE into $FONT_DEST"
+      cp "$FONT_SOURCE" "$FONT_DEST"
+    else
+      echo -e "The font $FONT_DEST was already installed"
+    fi
   fi
 else
   echo -e "It seems you are not running the installer from within the VimBox root"

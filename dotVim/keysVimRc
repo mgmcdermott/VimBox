@@ -1,15 +1,26 @@
-":vmap  :vnoremap  :vunmap  :vmapclear	    yes      yes
-"":xmap  :xnoremap  :xunmap  :xmapclear	    yes       -
-":smap  :snoremap  :sunmap  :smapclear	    -	     yes
-
-"*mapmode-ic* *mapmode-i* *mapmode-c* *mapmode-l*
-""Some commands work both in Insert mode and Command-line mode, some not:
-"commands:				      modes: ~
-"Insert  Command-line	Lang-Arg ~
-"":map!  :noremap!  :unmap!  :mapclear!	    yes	       yes	   -
-":imap  :inoremap  :iunmap  :imapclear	    yes		-	   -
-"":cmap  :cnoremap  :cunmap  :cmapclear	     -	       yes	   -
-":lmap  :lnoremap  :lunmap  :lmapclear	    yes*       yes*	  yes*
+"
+"						*map-overview* *map-modes*
+"
+"   Overview of which map command works in which mode.  More details below.
+"        COMMANDS                    MODES ~
+"   :map   :noremap  :unmap     Normal, Visual, Select, Operator-pending
+"   :nmap  :nnoremap :nunmap    Normal
+"   :vmap  :vnoremap :vunmap    Visual and Select
+"   :smap  :snoremap :sunmap    Select
+"   :xmap  :xnoremap :xunmap    Visual
+"   :omap  :onoremap :ounmap    Operator-pending
+"   :map!  :noremap! :unmap!    Insert and Command-line
+"   :imap  :inoremap :iunmap    Insert
+"   :lmap  :lnoremap :lunmap    Insert, Command-line, Lang-Arg
+"   :cmap  :cnoremap :cunmap    Command-line
+"
+"
+"       COMMANDS				      MODES ~
+"                  Normal  Visual+Select  Operator-pending ~
+"   :map   :noremap   :unmap   :mapclear	 yes	    yes		   yes
+"   :nmap  :nnoremap  :nunmap  :nmapclear	 yes	     -		    -
+"   :vmap  :vnoremap  :vunmap  :vmapclear	  -	    yes		    -
+"   :omap  :onoremap  :ounmap  :omapclear	  -	     -		   yes
 
 
 " Attempt to configure PairUtils so that c-w deletes the pair.  Doesn't work!
@@ -44,11 +55,6 @@ nmap <D-L> <c-w><c-l>
 
 "totally annoying default mapping for cap k
 nmap K <nop>
-
-
-" When in diff mode - Command-Shift-J/K move to next change in diff.
-nmap <D-K> [c
-nmap <D-J> ]c
 
 
 " Always gets out of autocomplete's and just lets you enter the newline!
@@ -135,50 +141,89 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
-
 " NERDTree
 " =========
 " Regular NERDTree bindings (not the NERDTreeTabs bindings)
-" if has("gui_running")
-"   if has("gui_macvim")
-"     map <D-e> :NERDTreeToggle<Cr><c-w><c-p>
-"     imap <D-e> <Esc>:NERDTreeToggle<Cr><c-w><c-p>
-"     vmap <D-e> <Esc>:NERDTreeToggle<Cr><c-w><c-p>
-"     nmap <D-e> <Esc>:NERDTreeToggle<Cr><c-w><c-p>
-
-"     map <D-E> :NERDTreeFind<Cr><c-w><c-p>
-"     imap <D-E> <Esc>:NERDTreeFind<Cr><c-w><c-p>
-"     vmap <D-E> <Esc>:NERDTreeFind<Cr><c-w><c-p>
-"     nmap <D-E> <Esc>:NERDTreeFind<Cr><c-w><c-p>
-"   endif
-"   if has("gui_win32")
-"     map <F11> :NERDTreeToggle<Cr><c-w><c-p>
-"     imap <F11> <Esc>:NERDTreeToggle<Cr><c-w><c-p>
-"     vmap <F11> <Esc>:NERDTreeToggle<Cr><c-w><c-p>
-"     nmap <F11> <Esc>:NERDTreeToggle<Cr><c-w><c-p>
-"   endif
-" endif
-
-" NERDTreeTabs bindings:
+" https://stackoverflow.com/questions/23891006/how-to-set-the-cursor-focus-after-toggling-the-nerdtree-in-vim
 if has("gui_running")
   if has("gui_macvim")
-    map <D-e> :NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
-    imap <D-e> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
-    vmap <D-e> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
-    nmap <D-e> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+    " Toggle File Tree:
+    " ------------------
+    " Insert, Command-line, Lang-Arg
+    lnoremap <silent> <special> <D-\> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeToggle <Bar> wincmd p <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Normal
+    nnoremap <silent> <special> <D-\> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeToggle <Bar> wincmd p <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Visual and Select
+    vnoremap <silent> <special> <D-\> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeToggle <Bar> wincmd p <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Operator pending
+    onoremap <silent> <special> <D-\> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeToggle <Bar> wincmd p <Bar> let g:VimSplitBalancerSupress=0 <CR>
 
-    map <D-E> :NERDTreeTabsOpen<Cr>:NERDTreeTabsFind<Cr><c-w><c-w><c-w><c-p>
-    imap <D-E> <Esc>:NERDTreeTabsOpen<Cr>:NERDTreeTabsFind<Cr><c-w><c-w><c-w><c-p>
-    vmap <D-E> <Esc>:NERDTreeTabsOpen<Cr>:NERDTreeTabsFind<Cr><c-w><c-w><c-w><c-p>
-    nmap <D-E> <Esc>:NERDTreeTabsOpen<Cr>:NERDTreeTabsFind<Cr><c-w><c-w><c-w><c-p>
+    " Find In File Tree:
+    " ------------------
+    " Insert, Command-line, Lang-Arg
+    lnoremap <silent> <special> <D-Bar> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeFind <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Normal
+    nnoremap <silent> <special> <D-Bar> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeFind <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Visual and Select
+    vnoremap <silent> <special> <D-Bar> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeFind <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Operator pending
+    onoremap <silent> <special> <D-Bar> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeFind <Bar> let g:VimSplitBalancerSupress=0 <CR>
+
+    " Toggle Focus Between File Tree:
+    " ------------------
+    " Insert, Command-line, Lang-Arg
+    lnoremap <silent> <special> <C-\> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> if &filetype ==# 'nerdtree' <Bar> wincmd p <Bar> else <Bar> NERDTreeFocus <Bar> endif <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Normal
+    nnoremap <silent> <special> <C-\> : let g:VimSplitBalancerSupress=1 <Bar> if &filetype ==# 'nerdtree' <Bar> wincmd p <Bar> else <Bar> NERDTreeFocus <Bar> endif <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Visual and Select
+    vnoremap <silent> <special> <C-\> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> if &filetype ==# 'nerdtree' <Bar> wincmd p <Bar> else <Bar> NERDTreeFocus <Bar> endif <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Operator pending
+    onoremap <silent> <special> <C-\> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> if &filetype ==# 'nerdtree' <Bar> wincmd p <Bar> else <Bar> NERDTreeFocus <Bar> endif <Bar> let g:VimSplitBalancerSupress=0 <CR>
+
   endif
   if has("gui_win32")
-    map <F11> :NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
-    imap <F11> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
-    vmap <F11> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
-    nmap <F11> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+    " Toggle File Tree:
+    " ------------------
+    " Insert, Command-line, Lang-Arg
+    lnoremap <silent> <special> <F11> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeToggle <Bar> wincmd p <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Normal
+    nnoremap <silent> <special> <F11> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeToggle <Bar> wincmd p <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Visual and Select
+    vnoremap <silent> <special> <F11> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeToggle <Bar> wincmd p <Bar> let g:VimSplitBalancerSupress=0 <CR>
+    " Operator pending
+    onoremap <silent> <special> <F11> <Esc> : let g:VimSplitBalancerSupress=1 <Bar> NERDTreeToggle <Bar> wincmd p <Bar> let g:VimSplitBalancerSupress=0 <CR>
+
+    " TODO: The rest
+
   endif
 endif
+
+" NERDTreeTabs bindings:
+" if has("gui_running")
+"   if has("gui_macvim")
+"     map <D-e> :NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+"     imap <D-e> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+"     vmap <D-e> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+"     nmap <D-e> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+"
+"     map <c-0> :NERDTreeToggle<Cr>
+"     imap <c-0> <Esc>:NERDTreeFocus<Cr>
+"     vmap <c-0> <Esc>:NERDTreeToggle<Cr>
+"     nmap <c-0> <Esc>:NERDTreeToggle<Cr>
+"
+"
+"     map <D-E> :NERDTreeTabsOpen<Cr>:NERDTreeTabsFind<Cr><c-w><c-w><c-w><c-p>
+"     imap <D-E> <Esc>:NERDTreeTabsOpen<Cr>:NERDTreeTabsFind<Cr><c-w><c-w><c-w><c-p>
+"     vmap <D-E> <Esc>:NERDTreeTabsOpen<Cr>:NERDTreeTabsFind<Cr><c-w><c-w><c-w><c-p>
+"     nmap <D-E> <Esc>:NERDTreeTabsOpen<Cr>:NERDTreeTabsFind<Cr><c-w><c-w><c-w><c-p>
+"   endif
+"   if has("gui_win32")
+"     map <F11> :NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+"     imap <F11> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+"     vmap <F11> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+"     nmap <F11> <Esc>:NERDTreeTabsToggle<Cr><c-w><c-w><c-w><c-p>
+"   endif
+" endif
 
 
 
@@ -189,10 +234,39 @@ endif
 " endif
 
 
+" Diagnostics.
 " Quick global shortcuts for toggling the location list or quickfix list
-" TODO: Use overlay for this as well.
-nmap <script> <silent> <D-r> :call Toggly(1)<CR>
-nmap <script> <silent> <D-R> :call Toggly(0)<CR>
+nmap <script> <silent> <D-d> :call Toggly(1)<CR>
+nmap <script> <silent> <D-D> :call Toggly(0)<CR>
+
+" http://vim.wikia.com/wiki/Get_shortened_messages_from_using_echomsg
+function! s:ShortEcho(msg)
+  let saved=&shortmess
+  set shortmess+=T
+  exe "norm :echomsg a:msg\n"
+  let &shortmess=saved
+endfunction
+function! s:ShortError(msg)
+  echohl Error
+  let saved=&shortmess
+  set shortmess+=T
+  exe "norm :echomsg a:msg\n"
+  let &shortmess=saved
+  echohl none
+endfunction
+
+" From answer here: https://vi.stackexchange.com/questions/1942/how-to-execute-shell-commands-silently
+fun! s:RunCmdOrShowErrorNicely(cmd)
+    silent let f = systemlist(a:cmd)
+    if v:shell_error
+      call s:ShortError("[ERROR]" . join(f, '   '))
+      return
+    endif
+endfun
+
+command! -nargs=+ RunCmdOrShowErrorNicelyCmd call s:RunCmdOrShowErrorNicely(<q-args>)
+nmap <script> <silent> <D-r> :RunCmdOrShowErrorNicelyCmd ./runFromEditor.sh<CR>
+" nmap <script> <silent> <D-R> :RunCmdOrShowErrorNicelyCmd ./runFromEditor.sh
 
 " Clear all forms of highlight when escape is pressed in normal mode.
 " Accounts for strange terminal behavior.
@@ -210,7 +284,7 @@ if executable('ocamlmerlin')
 endif
 
 " Command Shift C triggers reformatting, like Nuclide.
-autocmd FileType reason map <buffer> <D-M> :ReasonPrettyPrint<Cr>
+autocmd FileType reason map <buffer> <D-C> :ReasonPrettyPrint<Cr>
 
 
 
@@ -236,27 +310,6 @@ map <Space> gt
 " shift-space backwards - doesn't work on terminal, I believe
 map <s-Space> gT
 
-if has('gui_win32')
-  " space through your tabs!
-  map <M-}> gt
-  " shift-space backwards - doesn't work on terminal, I believe
-  map <M-{> gT
-  imap <M-}> <Esc>gt
-  " shift-space backwards - doesn't work on terminal, I believe
-  imap <M-{> <Esc>gT
-
-  nmap <F13> :q<Cr>
-  imap <F13> <Esc>:q<Cr>
-  nmap <F14> :qall<Cr>
-  imap <F14> <Esc>:qall<Cr>
-  nmap <F17> :tabnew<Cr>
-  imap <F17> <Esc> :tabnew<Cr>
-  vmap <F17> <Esc> :tabnew<Cr>
-  nmap <F16> :w<Cr>
-  imap <F16> <Esc>:w<Cr>l
-  vmap <F16> <Esc>:w<Cr>
-endif
-
 " Unfortunately the default `<c-c>` won't cause fuf to exit or cancel a search.
 if g:playWellWithFuzzyFinder
   " For fuzzyfinder, c-c won't fire insert leave. yet we can't just map to
@@ -276,6 +329,7 @@ if g:playWellWithFuzzyFinder
   imap <C-a> <home>
 else
   " Uses noremap because we already have c-o mapped.
+  " Hmmmm, this doesn't work - ends up inserting ^ characters sometimes.
   inoremap <C-a> <c-o>^
 endif
 
@@ -371,6 +425,32 @@ if has("gui_running") " all this for gui use
         " Toggle between (Previously Viewed) tab.
         map <D-P> :LastTab<CR>
         imap <D-P> <Esc>:LastTab<CR>
+
+        " Look at other deeply integrated mappings in the ~/.gvimrc file.
+        map <D-T> <Esc>:Undoquit<CR>
+
+    endif
+    if has('gui_win32')
+      " space through your tabs!
+      map <M-}> gt
+      " shift-space backwards - doesn't work on terminal, I believe
+      map <M-{> gT
+      imap <M-}> <Esc>gt
+      " shift-space backwards - doesn't work on terminal, I believe
+      imap <M-{> <Esc>gT
+
+      nmap <F13> :q<Cr>
+      imap <F13> <Esc>:q<Cr>
+      nmap <F14> :qall<Cr>
+      imap <F14> <Esc>:qall<Cr>
+      nmap <F17> :tabnew<Cr>
+      imap <F17> <Esc> :tabnew<Cr>
+      vmap <F17> <Esc> :tabnew<Cr>
+      nmap <F16> :w<Cr>
+      imap <F16> <Esc>:w<Cr>l
+      vmap <F16> <Esc>:w<Cr>
+      " Look at other deeply integrated mappings in the ~/.gvimrc file.
+      map <F18> <Esc>:Undoquit<CR>
     endif
 endif
 
