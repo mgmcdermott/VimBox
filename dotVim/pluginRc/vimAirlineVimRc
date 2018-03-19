@@ -1,4 +1,4 @@
-let g:airline_powerline_fonts = 1
+let g:airline_powerline_fonts = 0
 let g:airline_skip_empty_sections = 1
 " Git status can be expensive.
 let g:airline#extensions#branch#enabled = 0
@@ -16,7 +16,7 @@ function! AirlineInit()
     let g:syntastic_stl_format = '%W{ }%E{  }'
     let errors = SyntasticStatuslineFlag()
     let len = strlen(errors)
-    " 0, No errors no warning. syntasticOk will take up all the space, 1, 
+    " 0, No errors no warning. syntasticOk will take up all the space, 1,
     if len == 0 || len == 1
       return ''
     endif
