@@ -18,38 +18,6 @@ if !exists('g:one_allow_italics')
   let g:one_allow_italics = has('gui_running')
 endif
 
-" ============================= Oceanic Next =================================
-
-Plug 'mhartington/oceanic-next'
-
-if (has("termguicolors"))
-  set termguicolors
-endif
-
-if !exists('g:one_allow_italics')
-  " Italics don't typically render well in terminals
-  let g:oceanic_next_terminal_bold = 1
-  let g:oceanic_next_terminal_italic = 1
-endif
-
-" ==============================================================================
-
-" =========================== Prettier =======================================
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'npm install',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue'] }
-let g:prettier#config#print_width = 100
-let g:prettier#config#bracket_spacing = 'true'
-let g:prettier#config#jsx_bracket_same_line = 'false'
-let g:prettier#config#arrow_parens = 'avoid'
-
-let g:prettier#autoformat = 0
-" Can be enabled for formatting on save
-" autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue PrettierAsync
-
-" =========================== Typescript ===================================
-Plug 'HerringtonDarkholme/yats.vim'
-
 " ========================== Some colors ===========================
 Plug 'jordwalke/VimCleanColors'
 " ==============================================================================
@@ -342,32 +310,6 @@ endif
 
 " ==============================================================================
 
-" ======================================= Ale ==============================
-Plug 'w0rp/ale'
-let g:ale_linters = {
-\   'javascript': ['eslint', 'flow'],
-\}
-let g:ale_fixers = {
-\   'javascript': ['eslint'],
-\}
-
-" Enable completion where available.
-let g:ale_completion_enabled = 1
-
-" Set this setting in vimrc if you want to fix files automatically on save.
-" This is off by default.
-let g:ale_fix_on_save = 1
-
-let g:ale_sign_error = '●' " Less aggressive than the default '>>'
-let g:ale_sign_warning = '?'
-let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
-let g:ale_statusline_format = ['● %d', '? %d', '']
-" Map keys to navigate between lines with errors and warnings.
-nnoremap <leader>an :ALENextWrap<cr>
-nnoremap <leader>ap :ALEPreviousWrap<cr>
-
-" =========================================================================
-
 let g:airline#extensions#whitespace#trailing_format = ' '
 
 " ==================================== TaskList ================================
@@ -451,8 +393,8 @@ source ~/.vim/pluginRc/ctrlPVimRc
 " Plug 'jordwalke/AutoComplPop'
 let g:acp_ignorecaseOption = 1
 
-Plug 'lifepillar/vim-mucomplete'
-source ~/.vim/pluginRc/mucompleteVimRc
+" Plug 'lifepillar/vim-mucomplete'
+" source ~/.vim/pluginRc/mucompleteVimRc
 
 " ==============================================================================
 

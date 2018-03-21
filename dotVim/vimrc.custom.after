@@ -1,3 +1,7 @@
+" Allow project-specific vimrc files
+set exrc
+set secure
+
 " Overwrite this file with whatever you want. This will be executed after
 " loading any of the stock bundles/settings.
 set colorcolumn=100
@@ -13,25 +17,94 @@ autocmd BufWritePre * %s/\s\+$//e
 " Show hidden files in NERDTree
 let NERDTreeShowHidden=1
 let NERDTreeIgnore = ['\.pyc$', '\.DS_Store', '\.git', '\.idea']
-
-" Use prettier-eslint-cli
-autocmd FileType javascript.jsx set formatprg=prettier-eslint\ --stdin
+nnoremap <Leader>t :NERDTreeToggle<Enter>
+nnoremap <silent> <Leader>c :NERDTreeFind<CR>
 
 " Reload changed files automatically
 Plug 'chrisbra/vim-autoread'
 
-" Typescript
-" Plug 'leafgarland/typescript-vim'
-" Plug 'HerringtonDarkholme/yats.vim'
-" Plug 'Quramy/tsuquyomi'
-" let g:tsuquyomi_disable_quickfix = 1
-" let g:syntastic_typescript_checkers = ['tsuquyomi']
+Plug 'tpope/vim-dispatch'
 
-" Plug 'tpope/vim-dispatch'
 Plug 'janko-m/vim-test'
-let test#strategy = "iterm"
-nmap <silent> <leader>t :TestNearest<CR>
-nmap <silent> <leader>T :TestFile<CR>
-nmap <silent> <leader>a :TestSuite<CR>
-nmap <silent> <leader>l :TestLast<CR>
-nmap <silent> <leader>g :TestVisit<CR>
+let test#strategy = "dispatch"
+nmap <silent> t<C-n> :TestNearest<CR> " t Ctrl+n
+nmap <silent> t<C-f> :TestFile<CR>    " t Ctrl+f
+nmap <silent> t<C-s> :TestSuite<CR>   " t Ctrl+s
+nmap <silent> t<C-l> :TestLast<CR>    " t Ctrl+l
+nmap <silent> t<C-g> :TestVisit<CR>   " t Ctrl+g
+
+" ============================= Oceanic Next =================================
+
+Plug 'mhartington/oceanic-next'
+
+if (has("termguicolors"))
+  set termguicolors
+endif
+
+if !exists('g:one_allow_italics')
+  " Italics don't typically render well in terminals
+  let g:oceanic_next_terminal_bold = 1
+  let g:oceanic_next_terminal_italic = 1
+endif
+
+
+" =============================== deoplete ================================
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+Plug 'wokalski/autocomplete-flow'
+" For func argument completion
+Plug 'Shougo/neosnippet'
+Plug 'Shougo/neosnippet-snippets'
+
+let g:deoplete#enable_at_startup = 1
+let g:neosnippet#enable_completed_snippet = 1
+
+" =========================== Typescript ===================================
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'mhartington/nvim-typescript'
+
+" ======================================= Ale ==============================
+Plug 'w0rp/ale'
+let g:ale_linters = {
+\   'javascript': ['eslint', 'flow'],
+\}
+let g:ale_fixers = {
+\   'javascript': ['eslint'],
+\}
+
+" Enable completion where available.
+let g:ale_completion_enabled = 1
+
+" Set this setting in vimrc if you want to fix files automatically on save.
+" This is off by default.
+let g:ale_fix_on_save = 1
+
+let g:ale_sign_error = '●' " Less aggressive than the default '>>'
+let g:ale_sign_warning = '?'
+let g:ale_lint_on_enter = 0 " Less distracting when opening a new file
+let g:ale_statusline_format = ['● %d', '? %d', '']
+" Map keys to navigate between lines with errors and warnings.
+nnoremap <leader>an :ALENextWrap<cr>
+nnoremap <leader>ap :ALEPreviousWrap<cr>
+
+" =============================== NERDTree Git ================================
+Plug 'Xuyuanp/nerdtree-git-plugin'
+
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "M",
+    \ "Staged"    : "S",
+    \ "Untracked" : "?",
+    \ "Renamed"   : "R",
+    \ "Unmerged"  : "UM",
+    \ "Deleted"   : "D",
+    \ "Dirty"     : "-",
+    \ "Clean"     : "C",
+    \ 'Ignored'   : 'I',
+    \ "Unknown"   : "?"
+    \ }
+
